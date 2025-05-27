@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-deployment
+  labels:
+    app: mysqldb
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+      tier: database
+  replicas: 1
+  template:
+    metadata:
+      name: mysql-pod
+      labels:
+        env: development
+        app: mysql
+        tier: database
+    spec:
+      volumes:
+        - name: "mysql-data"
+          nfs:
+            server: nfs.dockerlabs.de
+            path: "/srv/nfs/mysql"
+      containers:
+        - name: mysql
+          image: mysql:8
+          volumeMounts:
+            - mountPath: "/var/lib/mysql"
+              name: "mysql-data"
+          ports:
+            - name: mysql
+              containerPort: 3306
+              protocol: TCP
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-db-credentials
+                  key: mysql-root-password

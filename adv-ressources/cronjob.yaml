@@ -1,0 +1,20 @@
+# until k8s 1.20
+# apiVersion: batch/v1beta1
+# starting with k8s 1.21
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: cronjob-demo
+spec:
+  concurrencyPolicy: Forbid
+  schedule: "*/1 * * * *"
+  successfulJobsHistoryLimit: 5
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: hello
+              image: bash
+              command: ["date"]
+          restartPolicy: OnFailure

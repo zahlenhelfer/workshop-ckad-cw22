@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: website-deployment
+  labels:
+    app: website
+spec:
+  selector:
+    matchLabels:
+      app: website
+      test: service
+  replicas: 5
+  template:
+    metadata:
+      labels:
+        app: website
+        test: service
+        env: production
+    spec:
+      containers:
+        - name: kuard
+          image: gcr.io/kuar-demo/kuard-amd64:1
+          ports:
+            - containerPort: 8080

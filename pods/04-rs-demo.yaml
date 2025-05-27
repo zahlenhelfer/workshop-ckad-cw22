@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: kuard-rs
+  labels:
+    app: "kuard"
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: "kuard"
+      foo: "bar"
+      sla: "gold"
+  template:
+    metadata:
+      labels:
+        app: "kuard"
+        sla: "gold"
+        foo: "bar"
+        costecenter: "666"
+        owner: "marketing"
+    spec:
+      containers:
+        - name: kuard
+          image: "gcr.io/kuar-demo/kuard-amd64:1"
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP

@@ -20,9 +20,8 @@ spec:
     spec:
       volumes:
         - name: "mysql-data"
-          nfs:
-            server: nfs.dockerlabs.de
-            path: "/srv/nfs/mysql"
+          persistentVolumeClaim:
+            claimName: mysql-pv-claim
       containers:
         - name: mysql
           image: mysql:8
@@ -32,10 +31,35 @@ spec:
           ports:
             - name: mysql
               containerPort: 3306
-              protocol: TCP
+              protocol: TCP          
           env:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: mysql-db-credentials
                   key: mysql-root-password
+          resources:
+            limits:
+              memory: '2Gi'
+              cpu: "2"
+            requests:
+              memory: '1Gi'
+              cpu: "1"
+          livenessProbe:
+            exec:
+              command:
+                - mysqladmin
+                - ping
+                - -h
+                - localhost
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - mysqladmin
+                - ping
+                - -h
+                - localhost
+            initialDelaySeconds: 30
+            periodSeconds: 10

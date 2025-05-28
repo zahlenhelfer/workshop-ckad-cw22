@@ -18,6 +18,7 @@ spec:
         app: mysql
         tier: database
     spec:
+      serviceAccountName: mysql-sa
       volumes:
         - name: "mysql-data"
           persistentVolumeClaim:
